@@ -1,0 +1,7 @@
+terraform.tfvars
+*.terraform/*
+*.tfstate
+*.tfstate.*
+*.auto.tfvars
+plan.out
+plan2.out
