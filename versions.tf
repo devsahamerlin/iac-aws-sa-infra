@@ -9,8 +9,23 @@ terraform {
     }
   }
 
-  backend "local" {
-    path = "states/terraform.tfstate"
+  # backend "local" {
+  #   path = "states/terraform.tfstate"
+  # }
+
+  # backend "remote" {
+  #   organization = "devsahamerlin"
+  #
+  #   workspaces {
+  #     name = "dev-aws-iac-demo"
+  #   }
+  # }
+
+  backend "s3" {
+    bucket = "tfc-iac-bucket"
+    region = "us-east-1"
+    encrypt = true
+    key    = "states/dev/terraform.tfstate"
   }
 
 }

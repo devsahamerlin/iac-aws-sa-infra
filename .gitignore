@@ -6,3 +6,4 @@ terraform.tfvars
 plan.out
 plan2.out
 .idea
+.terraform.lock.hcl
