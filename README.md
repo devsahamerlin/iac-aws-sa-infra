@@ -94,3 +94,92 @@ Recommendation: create specific policy with least privilege for S3 Bucket
 ```
 
 Ensure you have access to this S3 bucket or configure a different backend in `versions.tf`.
+
+## EKs
+
+```shell
+aws configure
+
+# pour le cluster "standard"
+aws eks --region us-east-2 update-kubeconfig --name $(terraform output -raw eks_cluster_name)
+
+# liste les contextes kube
+kubectl config get-contexts
+
+# vérifier le contexte courant (vous pouvez changer si besoin)
+kubectl config current-context
+
+# lister les nodes
+kubectl get nodes
+
+# lister les pods dans tous les namespaces
+kubectl get pods -A
+
+# lister les services (utile pour vérifier LoadBalancer)
+kubectl get svc -A
+
+kubectl apply -f nginx.yml
+
+kubectl expose deployment nginx-test --port=80 --target-port=80 --type=LoadBalancer
+
+kubectl get svc nginx-test -o wide
+# ou
+kubectl get svc -w nginx-test
+
+# forwarder le port 8080 local vers le pod/deployment
+kubectl port-forward deployment/nginx-test 8080:80
+# puis accéder à http://localhost:8080
+
+kubectl delete svc nginx-test
+kubectl delete deployment nginx-test
+```
+
+## Deploy E-commerce Microservices
+
+```shell
+kubectl apply -f https://github.com/aws-containers/retail-store-sample-app/releases/latest/download/kubernetes.yaml
+kubectl get pods -A
+kubectl get svc -A
+kubectl get svc -o wide
+kubectl get svc ui -o wide
+
+kubectl describe pod ui
+kubectl get events --sort-by='.metadata.creationTimestamp'
+
+kubectl logs deployment/ui
+
+kubectl config get-contexts
+
+```
+
+## supprimer les resources creer par les microservice
+
+```shell
+kubectl delete -f nginx.yml
+kubectl delete -f https://github.com/aws-containers/retail-store-sample-app/releases/latest/download/kubernetes.yaml
+```
+
+### Troublleshoot Resource if not deleted
+
+```shell
+# Lister tous les LBs encore actifs dans la région
+aws elb describe-load-balancers --query "LoadBalancerDescriptions[*].LoadBalancerName" --output table
+aws elbv2 describe-load-balancers --query "LoadBalancers[*].{Name:LoadBalancerName,State:State.Code}" --output table
+
+# Supprimer l'ELB classique
+aws elb delete-load-balancer --load-balancer-name a4446c647255d42d5b518b5f61041b6d
+
+# Vérifier les LBs v2 (ALB/NLB)
+aws elbv2 describe-load-balancers \
+  --query "LoadBalancers[*].{Name:LoadBalancerName,ARN:LoadBalancerArn,State:State.Code}" \
+  --output table
+
+VPC_ID=vpc-0487860d3d0b87d2e
+
+aws ec2 describe-security-groups \
+  --filters "Name=vpc-id,Values=$VPC_ID" \
+  --query "SecurityGroups[?GroupName!='default'].{ID:GroupId,Name:GroupName}" \
+  --output table
+
+aws ec2 delete-security-group --group-id sg-056d45efbe445f75b
+```

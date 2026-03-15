@@ -17,3 +17,10 @@ variable "cidr_block" {
 }
 
 variable "environment" {}
+
+variable "cluster_public_subnet_cidr_block" {
+  type = list(string)
+}
+variable "cluster_private_subnet_cidr_block" {
+  type = list(string)
+}
