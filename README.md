@@ -613,35 +613,3 @@ Le `HorizontalPodAutoscaler` défini dans `demo-game.yml` nécessite que le metr
 
 Ce projet ne se limite pas à un exercice de provisionnement. Chaque décision — modularisation Terraform, backend distant, politique IAM à moindre privilège, séparation des clusters standard/auto, gestion explicite du cycle de vie des ressources Kubernetes hors scope — traduit une posture d'ingénierie définie et documentée.
 
-```
-Ce que lit un œil non averti        Ce que perçoit un regard expérimenté
-──────────────────────────────────────────────────────────────────────────────
-"Il sait écrire du Terraform"        "Il structure son IaC en modules
-                                      faiblement couplés, avec outputs
-                                      explicites entre modules"
-
-"Il a déployé un cluster EKS"        "Il distingue EKS standard et EKS
-                                      Auto Mode, documente les trade-offs
-                                      IAM surface et opérationnels"
-
-"Il a configuré un backend S3"       "Il a appliqué le moindre privilège
-                                      sur le bucket d'état, en isolant
-                                      list/read/write par SID distinct"
-
-"Il a déployé des microservices"     "Il sait que Kubernetes crée des
-                                      ressources AWS hors scope Terraform,
-                                      et a documenté le nettoyage manuel"
-
-"Il a écrit des politiques IAM"      "Il a scindé les permissions par
-                                      domaine fonctionnel pour minimiser
-                                      le blast radius en cas de compromission"
-
-"Il a ajouté un HPA"                 "Il sait que l'HPA est inopérant
-                                      sans metrics-server sur EKS standard,
-                                      et a documenté ce piège"
-
-"Il a du code propre"                "Il pense comme un Architecte :
-                                      chaque commande est contextualisée,
-                                      chaque choix est traçable,
-                                      chaque piège est documenté"
-```
